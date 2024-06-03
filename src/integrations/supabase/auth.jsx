@@ -1,8 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
-import { supabase, SupabaseProvider } from './index.js';
+import { SupabaseProvider } from './index.js';
 import { useQueryClient } from '@tanstack/react-query';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
 
 const SupabaseAuthContext = createContext();
 
@@ -22,24 +20,20 @@ export const SupabaseAuthProviderInner = ({ children }) => {
 
   useEffect(() => {
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      // Mock session retrieval
+      const session = { user: { email: 'mockuser@example.com' } };
       setSession(session);
     };
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      queryClient.invalidateQueries('user');
-    });
 
     getSession();
 
     return () => {
-      authListener.subscription.unsubscribe();
+      // Mock cleanup
     };
   }, [queryClient]);
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    // Mock logout
     setSession(null);
     queryClient.invalidateQueries('user');
   };
@@ -56,11 +50,10 @@ export const useSupabaseAuth = () => {
 };
 
 export const SupabaseAuthUI = () => (
-  <Auth
-    supabaseClient={supabase}
-    appearance={{ theme: ThemeSupa }}
-    theme="dark"
-  />
+  <div>
+    <p>Mock Auth UI</p>
+    <button onClick={() => alert('Mock login')}>Login</button>
+  </div>
 );
 
 /* example usage (do not remove)
