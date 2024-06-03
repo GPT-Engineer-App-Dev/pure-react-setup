@@ -1,6 +1,15 @@
 import { Box, Container, Flex, Text, VStack, Link } from "@chakra-ui/react";
+import { useEvents, useComments, useVenues } from "../integrations/supabase/index.js";
 
 const Index = () => {
+  const { data: events, error: eventsError } = useEvents();
+  const { data: comments, error: commentsError } = useComments();
+  const { data: venues, error: venuesError } = useVenues();
+
+  if (eventsError || commentsError || venuesError) {
+    return <Text>Error loading data</Text>;
+  }
+
   return (
     <Box>
       {/* Navigation Bar */}
@@ -22,6 +31,32 @@ const Index = () => {
         <VStack spacing={4}>
           <Text fontSize="2xl">Welcome to My Website</Text>
           <Text>This is a basic structure of a React app with Chakra UI.</Text>
+        <Box>
+            <Text fontSize="xl" fontWeight="bold">Events</Text>
+            {events?.map(event => (
+              <Box key={event.id} p={4} borderWidth={1} borderRadius="md">
+                <Text fontSize="lg">{event.name}</Text>
+                <Text>{event.description}</Text>
+              </Box>
+            ))}
+          </Box>
+          <Box>
+            <Text fontSize="xl" fontWeight="bold">Comments</Text>
+            {comments?.map(comment => (
+              <Box key={comment.id} p={4} borderWidth={1} borderRadius="md">
+                <Text>{comment.content}</Text>
+              </Box>
+            ))}
+          </Box>
+          <Box>
+            <Text fontSize="xl" fontWeight="bold">Venues</Text>
+            {venues?.map(venue => (
+              <Box key={venue.id} p={4} borderWidth={1} borderRadius="md">
+                <Text fontSize="lg">{venue.name}</Text>
+                <Text>{venue.location}</Text>
+              </Box>
+            ))}
+          </Box>
         </VStack>
       </Container>
 
